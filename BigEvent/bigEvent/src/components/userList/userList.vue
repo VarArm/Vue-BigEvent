@@ -23,7 +23,12 @@
         <el-table-column prop="mobile" label="电话"></el-table-column>
         <el-table-column label="用户状态" width="100">
           <template slot-scope="scope">
-            <el-switch active-color="#13ce66" inactive-color="#ff4949" v-model="scope.row.mg_state"></el-switch>
+            <el-switch
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              v-model="scope.row.mg_state"
+              @change="changeState(scope.row)"
+            ></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="240">
@@ -126,218 +131,247 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       userList: [],
       pagenum: 1,
       pagesize: 5,
-      query: "",
+      query: '',
       total: 0,
       pagesizes: [5, 10, 15],
-      formLabelWidth: "80px",
-      formLabelWidth1: "100px",
+      formLabelWidth: '80px',
+      formLabelWidth1: '100px',
       dialogFormVisible: false,
       editdialog: false,
       rolesdialog: false,
-      addList: { username: "", email: "", mobile: "", password: "" },
-      editList: { username: "", email: "", mobile: "" },
-      rolesList: { username: "", roleName: "", rid: "" },
+      addList: { username: '', email: '', mobile: '', password: '' },
+      editList: { username: '', email: '', mobile: '' },
+      rolesList: { username: '', roleName: '', rid: '' },
       options: [],
       rules: {
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 3, max: 8, message: "长度在 3 到 8 个字符", trigger: "blur" }
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, max: 11, message: "长度在 6 到 11 个字符", trigger: "blur" }
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 11, message: '长度在 6 到 11 个字符', trigger: 'blur' }
         ],
         email: [
-          { type: "email", message: "邮箱地址格式不正确", trigger: "blur" }
+          { type: 'email', message: '邮箱地址格式不正确', trigger: 'blur' }
         ],
-        mobile: [{ type: "", message: "请输入用户名", trigger: "blur" }]
+        mobile: [{ type: '', message: '请输入用户名', trigger: 'blur' }]
       }
-    };
+    }
   },
   methods: {
-    getDataList() {
+    getDataList () {
       this.$http({
         url: `http://localhost:8888/api/private/v1/users?query=${
           this.query
         }&pagenum=${this.pagenum}&pagesize=${this.pagesize}`,
-        method: "get",
-        headers: { Authorization: window.localStorage.getItem("token") }
+        method: 'get',
+        headers: { Authorization: window.localStorage.getItem('token') }
       }).then(res => {
-        console.log(res);
-        let { data, meta } = res.data;
+        console.log(res)
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.userList = data.users;
-          this.total = data.total;
+          this.userList = data.users
+          this.total = data.total
         }
-      });
+      })
     },
-    searchuser() {
-      this.getDataList();
+    searchuser () {
+      this.getDataList()
     },
-    handleSizeChange(val) {
-      this.pagesize = val;
-      this.getDataList();
+    handleSizeChange (val) {
+      this.pagesize = val
+      this.getDataList()
     },
-    handleCurrentChange(val) {
-      this.pagenum = val;
-      this.getDataList();
+    handleCurrentChange (val) {
+      this.pagenum = val
+      this.getDataList()
     },
-    addDialog() {
-      this.dialogFormVisible = true;
+    addDialog () {
+      this.dialogFormVisible = true
     },
-    cancelDialog() {
-      this.dialogFormVisible = false;
+    cancelDialog () {
+      this.dialogFormVisible = false
     },
-    addUser() {
+    addUser () {
       this.$refs.dialogForm.validate(valid => {
         if (valid) {
           this.$http({
-            url: "http://localhost:8888/api/private/v1/users",
-            method: "post",
-            headers: { Authorization: window.localStorage.getItem("token") },
+            url: 'http://localhost:8888/api/private/v1/users',
+            method: 'post',
+            headers: { Authorization: window.localStorage.getItem('token') },
             data: this.addList
           }).then(res => {
             if (res.data.meta.status === 201) {
               this.$message({
-                type: "success",
+                type: 'success',
                 message: res.data.meta.msg
-              });
-              this.dialogFormVisible = false;
-              this.getDataList();
+              })
+              this.dialogFormVisible = false
+              this.getDataList()
               // 清空新增面板
-              this.addList.username = "";
-              this.addList.password = "";
-              this.addList.email = "";
-              this.addList.mobile = "";
+              this.addList.username = ''
+              this.addList.password = ''
+              this.addList.email = ''
+              this.addList.mobile = ''
             } else {
-              this.$message.error(res.data.meta.msg);
+              this.$message.error(res.data.meta.msg)
             }
-          });
+          })
         }
-      });
+      })
     },
-    editDialog(id) {
-      this.editdialog = true;
+    editDialog (id) {
+      this.editdialog = true
       this.$http({
         url: `http://localhost:8888/api/private/v1/users/${id}`,
-        method: "get",
-        headers: { Authorization: window.localStorage.getItem("token") }
+        method: 'get',
+        headers: { Authorization: window.localStorage.getItem('token') }
       }).then(res => {
-        let { data, meta } = res.data;
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.editList = data;
+          this.editList = data
         }
-      });
+      })
     },
-    candeleditUser() {
-      this.editdialog = false;
+    candeleditUser () {
+      this.editdialog = false
     },
-    editUser() {
-      let id = this.editList.id;
+    editUser () {
+      let id = this.editList.id
       this.$http({
         url: `http://localhost:8888/api/private/v1/users/${id}`,
-        method: "put",
-        headers: { Authorization: window.localStorage.getItem("token") },
+        method: 'put',
+        headers: { Authorization: window.localStorage.getItem('token') },
         data: this.editList
       }).then(res => {
-        let { data, meta } = res.data;
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.editList = data;
+          this.editList = data
           this.$message({
-            type: "success",
+            type: 'success',
             message: meta.msg
-          });
-          this.editdialog = false;
-          this.getDataList();
+          })
+          this.editdialog = false
+          this.getDataList()
         } else {
-          this.$message.error(meta.msg);
+          this.$message.error(meta.msg)
         }
-      });
+      })
     },
-    deleteUser(id) {
-      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+    deleteUser (id) {
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
           this.$http({
             url: `http://localhost:8888/api/private/v1/users/${id}`,
-            method: "delete",
-            headers: { Authorization: window.localStorage.getItem("token") }
+            method: 'delete',
+            headers: { Authorization: window.localStorage.getItem('token') }
           }).then(res => {
-            if (res.data.meta.status == 200) {
-              this.getDataList();
+            if (res.data.meta.status === 200) {
+              this.getDataList()
               this.$message({
-                type: "success",
+                type: 'success',
                 message: res.data.meta.msg
-              });
+              })
             }
-          });
+          })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
-    AssignRoles(id) {
-      this.rolesdialog = true;
+    AssignRoles (id) {
+      this.rolesdialog = true
       this.$http({
         url: `http://localhost:8888/api/private/v1/users/${id}`,
-        method: "get",
-        headers: { Authorization: window.localStorage.getItem("token") }
+        method: 'get',
+        headers: { Authorization: window.localStorage.getItem('token') }
       }).then(res => {
-        console.log(res);
-        let { data, meta } = res.data;
+        console.log(res)
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.rolesList = data;
+          this.rolesList = data
         }
-      });
+      })
       this.$http({
         url: `http://localhost:8888/api/private/v1/roles`,
-        method: "get",
-        headers: { Authorization: window.localStorage.getItem("token") }
+        method: 'get',
+        headers: { Authorization: window.localStorage.getItem('token') }
       }).then(res => {
-        if (res.data.meta.status == 200) {
-          this.options = res.data.data;
+        if (res.data.meta.status === 200) {
+          this.options = res.data.data
         }
-      });
+      })
     },
-    candelRoles() {
-      this.rolesdialog = false;
+    candelRoles () {
+      this.rolesdialog = false
     },
-    RolesAssign() {
-      let rid = this.rolesList.rid;
-      let id = this.rolesList.id;
-      console.log(rid, id);
+    RolesAssign () {
+      let rid = this.rolesList.rid
+      let id = this.rolesList.id
+      console.log(rid, id)
       this.$http({
         url: `http://localhost:8888/api/private/v1/users/${id}/role`,
-        method: "put",
-        headers: { Authorization: window.localStorage.getItem("token") },
-        data: rid
+        method: 'put',
+        headers: { Authorization: window.localStorage.getItem('token') },
+        data: { rid }
       }).then(res => {
-        console.log(res);
-      });
-      this.rolesdialog = false;
+        let { data, meta } = res.data
+        if (meta.status === 200) {
+          this.rolesList = data
+          this.$message({
+            type: 'success',
+            message: meta.msg
+          })
+          this.rolesdialog = false
+          this.getDataList()
+        } else {
+          this.$message.error(meta.msg)
+        }
+      })
+    },
+    changeState (state) {
+      this.$http({
+        url: `http://localhost:8888/api/private/v1/users/${state.id}/state/${
+          state.mg_state
+        }`,
+        method: 'put',
+        headers: { Authorization: window.localStorage.getItem('token') }
+      }).then(res => {
+        if (res.data.meta.status === 200) {
+          this.$message({
+            type: 'success',
+            message: res.data.meta.msg
+          })
+        } else {
+          this.$message.error(res.data.meta.msg)
+        }
+      })
     }
   },
-  mounted() {
-    this.getDataList();
+  mounted () {
+    this.getDataList()
   }
-};
+}
 </script>
 <style>
 .myrow {
   margin-top: 20px;
+  background-color: rgb(233, 238, 243);
 }
-.el-table {
+/* .el-table {
   margin-top: 20px;
-}
+} */
 </style>
