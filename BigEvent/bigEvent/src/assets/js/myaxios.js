@@ -7,8 +7,6 @@ myaxios.install = function (Vue) {
     // axios.defaults.headers.common['Authorization'] = window.localStorage.getItem('token')
     axios.interceptors.request.use(function (config) {
         // Do something before request is sent
-        console.log(config.headers.Authorization)
-        console.log(config.url)
         if (!config.url.includes('login')) {
             config.headers.Authorization = window.localStorage.getItem('token')
         }

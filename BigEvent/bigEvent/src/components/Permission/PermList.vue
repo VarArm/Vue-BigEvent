@@ -99,7 +99,15 @@
       </el-dialog>
       <el-dialog title="权限分配" :visible.sync="permissionrolesDialog">
         <div>
-          <el-tree :data="permissionrolesData" show-checkbox node-key="id" :props="defaultProps"></el-tree>
+          <el-tree
+            ref="tree"
+            :data="permissionrolesData"
+            show-checkbox
+            node-key="id"
+            default-expand-all
+            :default-checked-keys="checkedKeys"
+            :props="defaultProps"
+          ></el-tree>
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button @click.prevent="cancelpermission">取 消</el-button>
@@ -112,143 +120,183 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       rolesData: [],
-      addroles: { roleName: '', roleDesc: '' },
-      editroles: { roleName: '', roleDesc: '' },
-      formLabelWidth: '80px',
+      addroles: { roleName: "", roleDesc: "" },
+      editroles: { roleName: "", roleDesc: "" },
+      formLabelWidth: "80px",
       addrolesDialog: false,
       editrolesDialog: false,
-      permissionrolesData: [],
       permissionrolesDialog: false,
       defaultProps: {
-        label: 'authName',
-        children: 'children'
+        label: "authName",
+        children: "children"
       },
+      //所有的权限数组
+      permissionrolesData: [],
+      //当前角色的权限数组
+      checkedKeys: [],
+      //当前角色的信息
+      currentRole: {},
       rules: {
         roleName: [
-          { required: true, message: '请输入角色名称', trigger: 'blur' }
+          { required: true, message: "请输入角色名称", trigger: "blur" }
         ],
         roleDesc: [
-          { required: true, message: '请输入角色描述', trigger: 'blur' }
+          { required: true, message: "请输入角色描述", trigger: "blur" }
         ]
       }
-    }
+    };
   },
   methods: {
-    getRolesData () {
+    getRolesData() {
       this.$http({
-        url: `http://localhost:8888/api/private/v1/roles`,
-        method: 'get',
-        headers: { Authorization: window.localStorage.getItem('token') }
+        url: `roles`,
+        method: "get"
       }).then(res => {
-        let { data, meta } = res.data
-        console.log(res)
+        let { data, meta } = res.data;
+        console.log(res);
         if (meta.status === 200) {
-          this.rolesData = data
+          this.rolesData = data;
         }
-      })
+      });
     },
-    addRolesDialog () {
-      this.addrolesDialog = true
+    addRolesDialog() {
+      this.addrolesDialog = true;
     },
-    canceladdroles () {
-      this.addrolesDialog = false
+    canceladdroles() {
+      this.addrolesDialog = false;
     },
-    addrole () {
+    addrole() {
       this.$http({
-        url: `http://localhost:8888/api/private/v1/roles`,
-        method: 'post',
-        headers: { Authorization: window.localStorage.getItem('token') },
+        url: `roles`,
+        method: "post",
         data: this.addroles
       }).then(res => {
-        console.log(res)
-        let { data, meta } = res.data
+        console.log(res);
+        let { data, meta } = res.data;
         if (meta.status === 201) {
-          this.addroles = data
+          this.addroles = data;
           this.$message({
-            type: 'success',
+            type: "success",
             message: meta.msg
-          })
-          this.addrolesDialog = false
-          this.getRolesData()
-          this.addroles.roleName = ''
-          this.addroles.roleDesc = ''
+          });
+          this.addrolesDialog = false;
+          this.getRolesData();
+          this.addroles.roleName = "";
+          this.addroles.roleDesc = "";
         } else {
-          this.$message.error(meta.msg)
+          this.$message.error(meta.msg);
         }
-      })
+      });
     },
-    editRolesDialog (id) {
+    editRolesDialog(id) {
       this.$http({
-        url: `http://localhost:8888/api/private/v1/roles/${id}`,
-        method: 'get',
-        headers: { Authorization: window.localStorage.getItem('token') }
+        url: `roles/${id}`,
+        method: "get"
       }).then(res => {
-        let { data } = res.data
-        this.editroles = data
-      })
-      this.editrolesDialog = true
+        let { data } = res.data;
+        this.editroles = data;
+      });
+      this.editrolesDialog = true;
     },
-    canceleditroles () {
-      this.editrolesDialog = false
+    canceleditroles() {
+      this.editrolesDialog = false;
     },
-    editrole () {
-      let id = this.editroles.roleId
+    editrole() {
+      let id = this.editroles.roleId;
       this.$http({
-        url: `http://localhost:8888/api/private/v1/roles/${id}`,
-        method: 'put',
-        data: this.editroles,
-        headers: { Authorization: window.localStorage.getItem('token') }
+        url: `roles/${id}`,
+        method: "put",
+        data: this.editroles
       }).then(res => {
-        let { meta } = res.data
+        let { meta } = res.data;
         if (meta.status === 200) {
-          this.getRolesData()
-          this.editrolesDialog = false
+          this.getRolesData();
+          this.editrolesDialog = false;
           this.$message({
-            type: 'success',
-            message: '修改成功'
-          })
+            type: "success",
+            message: "修改成功"
+          });
         }
-      })
+      });
     },
-    deleteRole (id) {
-      this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+    deleteRole(id) {
+      this.$confirm("此操作将永久删除该角色, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
         .then(() => {
           this.$http({
-            url: `http://localhost:8888/api/private/v1/roles/${id}`,
-            method: 'delete',
-            headers: { Authorization: window.localStorage.getItem('token') }
+            url: `roles/${id}`,
+            method: "delete"
           }).then(res => {
             if (res.data.meta.status === 200) {
-              this.getRolesData()
+              this.getRolesData();
               this.$message({
-                type: 'success',
+                type: "success",
                 message: res.data.meta.msg
-              })
+              });
             }
-          })
+          });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
-    permissionRole (roles) {
-      this.permissionrolesDialog = true
+    cancelpermission() {
+      this.permissionrolesDialog = false;
+    },
+    permissionRole(roles) {
+      function getLevel3Ids(rightsList) {
+        let arr = [];
+        const fn = function(list) {
+          list.forEach(item => {
+            if (!item.children) {
+              arr.push(item.id);
+            } else {
+              fn(item.children);
+            }
+          });
+        };
+        fn(rightsList);
+        return arr;
+      }
+      this.currentRole = roles;
+      //获取所有权限列表
+      this.$http({
+        url: `rights/tree`,
+        method: "get"
+      }).then(res => {
+        let { meta, data } = res.data;
+        this.permissionrolesData = data;
+      });
+      this.permissionrolesDialog = true;
+      //获取当前角色获取的权限ID
+      this.checkedKeys = getLevel3Ids(roles.children);
+      console.log(this.checkedKeys);
+    },
+    editpermission() {
+      const Nodes = this.$refs.tree.getCheckedNodes();
+      this.permissionrolesDialog = false;
+      this.$http({
+        url: `rights/tree`,
+        method: "get"
+      }).then(res => {
+        let { meta, data } = res.data;
+        this.permissionrolesData = data;
+      });
     }
   },
-  mounted () {
-    this.getRolesData()
+  mounted() {
+    this.getRolesData();
   }
-}
+};
 </script>
 <style>
 .myrow {
