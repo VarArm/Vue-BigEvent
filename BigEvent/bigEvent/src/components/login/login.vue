@@ -26,53 +26,53 @@
 </template>
 <script>
 export default {
-  data () {
+  data() {
     return {
       loginObj: {
-        username: '',
-        password: ''
+        username: "",
+        password: ""
       },
-      labelPosition: 'top',
+      labelPosition: "top",
       rules: {
         // required: 当前属性是必须的
         // message: 如果不填会出现的提示信息
         // trigger：触发这个规则的时间 blur 失去焦点
-        username: { required: true, message: '请输入用户名', trigger: 'blur' },
-        password: { required: true, message: '请输入密码', trigger: 'blur' }
+        username: { required: true, message: "请输入用户名", trigger: "blur" },
+        password: { required: true, message: "请输入密码", trigger: "blur" }
       }
-    }
+    };
   },
   methods: {
-    putLogin () {
+    putLogin() {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           this.$http({
-            url: 'http://localhost:8888/api/private/v1/login',
-            method: 'post',
+            url: "login",
+            method: "post",
             data: this.loginObj
           })
             .then(res => {
-              console.log(res)
-              let { data, meta } = res.data
+              console.log(res);
+              let { data, meta } = res.data;
               if (meta.status === 200) {
-                this.$router.push('/')
-                window.localStorage.setItem('token', data.token)
+                this.$router.push("/");
+                window.localStorage.setItem("token", data.token);
                 this.$message({
                   message: meta.msg,
-                  type: 'success'
-                })
+                  type: "success"
+                });
               } else {
-                this.$message.error(meta.msg)
+                this.$message.error(meta.msg);
               }
             })
             .catch(err => {
-              console.log(err)
-            })
+              console.log(err);
+            });
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 <style>
 .login {
