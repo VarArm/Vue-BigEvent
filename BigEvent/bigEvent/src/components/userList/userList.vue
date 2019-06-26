@@ -1,11 +1,7 @@
 <template>
   <div>
     <el-card>
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-        <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-      </el-breadcrumb>
+      <Mybread one="用户管理" two="用户列表"></Mybread>
       <el-row class="myrow">
         <el-col :span="6">
           <el-input placeholder="请输入内容" v-model="query" class="input-with-select">
@@ -130,34 +126,37 @@
   </div>
 </template>
 <script>
+import Mybread from "../mylayout/mybread";
 export default {
   data() {
     return {
-      //用户列表
+      //
+
+      // 用户列表
       userList: [],
-      //当前页
+      // 当前页
       pagenum: 1,
-      //页容量
+      // 页容量
       pagesize: 5,
-      //获取页面列表时的参数.可以为空
+      // 获取页面列表时的参数.可以为空
       query: "",
-      //总页数
+      // 总页数
       total: 0,
-      //页容量数组
+      // 页容量数组
       pagesizes: [5, 10, 15],
-      //模态框左边宽度
+      // 模态框左边宽度
       formLabelWidth: "80px",
       formLabelWidth1: "100px",
-      //添加,修改用户,分配角色对话框是否显示
+      // 添加,修改用户,分配角色对话框是否显示
       dialogFormVisible: false,
       editdialog: false,
       rolesdialog: false,
-      //添加用户数据
+      // 添加用户数据
       addList: { username: "", email: "", mobile: "", password: "" },
       editList: { username: "", email: "", mobile: "" },
-      //分配角色列表
+      // 分配角色列表
       rolesList: { username: "", roleName: "", rid: "" },
-      //角色数组
+      // 角色数组
       options: [],
       rules: {
         username: [
@@ -194,12 +193,12 @@ export default {
     searchuser() {
       this.getDataList();
     },
-    //改变页容量
+    // 改变页容量
     handleSizeChange(val) {
       this.pagesize = val;
       this.getDataList();
     },
-    //改变页码
+    // 改变页码
     handleCurrentChange(val) {
       this.pagenum = val;
       this.getDataList();
@@ -327,7 +326,7 @@ export default {
     candelRoles() {
       this.rolesdialog = false;
     },
-    //分配角色
+    // 分配角色
     RolesAssign() {
       let rid = this.rolesList.rid;
       let id = this.rolesList.id;
@@ -337,7 +336,7 @@ export default {
         method: "put",
         data: { rid }
       }).then(res => {
-        let { data, meta } = res.data;
+        let { meta } = res.data;
         if (meta.status === 200) {
           this.$message({
             type: "success",
@@ -367,10 +366,13 @@ export default {
   },
   mounted() {
     this.getDataList();
+  },
+  components: {
+    Mybread: Mybread
   }
 };
 </script>
-<style>
+<style scoped>
 .myrow {
   margin-top: 20px;
   background-color: rgb(233, 238, 243);

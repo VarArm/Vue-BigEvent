@@ -2,18 +2,18 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import ElementUI from 'element-ui'
-
+// import echarts from "echarts"
 import 'element-ui/lib/theme-chalk/index.css'
 import '../src/assets/css/index.css'
-//引入myaxios
+// 引入myaxios
 import myaxios from '../src/assets/js/myaxios'
 import App from './App'
 import router from './router'
 
 Vue.use(ElementUI)
-//使用axios
+// 使用axios
 Vue.use(myaxios)
-
+// Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({

@@ -4,9 +4,12 @@ import Login from '@/components/login/login.vue'
 import Home from '../components/home/home.vue'
 import UserList from '../components/userList/userList.vue'
 import PermList from '../components/Permission/PermList.vue'
-Vue.use(Router)
+import Rights from '../components/rights/rights.vue'
+import Reports from '../components/reports/reports.vue'
+import Goods from '../components/goods/goods.vue'
 
-export default new Router({
+Vue.use(Router)
+var router = new Router({
   routes: [
     { path: '/', redirect: '/home' },
     { path: '/login', component: Login },
@@ -14,9 +17,28 @@ export default new Router({
       path: '/home',
       component: Home,
       children: [
-        { path: '/user', component: UserList },
-        { path: '/permList', component: PermList }
+        { path: '/users', component: UserList },
+        { path: '/roles', component: PermList },
+        { path: '/rights', component: Rights },
+        { path: '/reports', component: Reports },
+        { path: '/goods', component: Goods },
       ]
     }
   ]
 })
+router.beforeEach(function (to, from, next) {
+  console.log(to);
+  if (to.path !== "/login") {
+    let token = window.localStorage.getItem('token')
+    if (!token) {
+
+      router.push('/login')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
+
+export default router

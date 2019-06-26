@@ -1,11 +1,7 @@
 <template>
   <div>
     <el-card>
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>权限管理</el-breadcrumb-item>
-        <el-breadcrumb-item>角色列表</el-breadcrumb-item>
-      </el-breadcrumb>
+      <Mybread one="权限管理" two="角色列表"></Mybread>
       <el-row class="myrow">
         <el-col :span="4">
           <el-button plain @click.prevent="addRolesDialog">添加角色</el-button>
@@ -16,21 +12,30 @@
           <template slot-scope="scope">
             <el-row class="level1-row" v-for="level1 in scope.row.children" :key="level1.id">
               <el-col :span="4">
-                <el-tag closable type>{{level1.authName}}</el-tag>
+                <el-tag
+                  @close="deleteright(scope.row.id,level1.id,scope)"
+                  closable
+                  type
+                >{{level1.authName}}{{level1.id}}</el-tag>
               </el-col>
               <el-col :span="20">
                 <el-row class="level2-row" v-for="level2 in level1.children" :key="level2.id">
                   <el-col :span="5">
-                    <el-tag closable type="success">{{level2.authName}}</el-tag>
+                    <el-tag
+                      @close="deleteright(scope.row.id,level2.id,scope)"
+                      closable
+                      type="success"
+                    >{{level2.authName}}{{level2.id}}</el-tag>
                   </el-col>
                   <el-col :span="19">
                     <el-tag
+                      @close="deleteright(scope.row.id,level3.id,scope)"
                       class="level3-row"
                       v-for="level3 in level2.children"
                       :key="level3.id"
                       closable
                       type="warning"
-                    >{{level3.authName}}</el-tag>
+                    >{{level3.authName}}{{level3.id}}</el-tag>
                   </el-col>
                 </el-row>
               </el-col>
@@ -110,15 +115,15 @@
           ></el-tree>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.prevent="cancelpermission">取 消</el-button>
+          <el-button @click.prevent="permissionrolesDialog = false">取 消</el-button>
           <el-button type="primary" @click.prevent="editpermission">确 定</el-button>
         </div>
       </el-dialog>
     </el-card>
   </div>
 </template>
-
 <script>
+import Mybread from "../mylayout/mybread";
 export default {
   data() {
     return {
@@ -133,12 +138,12 @@ export default {
         label: "authName",
         children: "children"
       },
-      //所有的权限数组
+      // 所有的权限数组
       permissionrolesData: [],
-      //当前角色的权限数组
+      // 当前角色的权限数组
       checkedKeys: [],
-      //当前角色的信息
-      currentRole: {},
+      // 当前角色的信息
+      setRoleId: 0,
       rules: {
         roleName: [
           { required: true, message: "请输入角色名称", trigger: "blur" }
@@ -222,6 +227,24 @@ export default {
         }
       });
     },
+    deleteright(rolesid, rightsid, scope) {
+      console.log(rolesid, rightsid, scope);
+      this.$http({
+        url: `roles/${rolesid}/rights/${rightsid}`,
+        method: "DELETE"
+      }).then(res => {
+        let { data, meta } = res.data;
+        if (meta.status === 200) {
+          this.$message({
+            message: meta.msg,
+            type: "success"
+          });
+          scope.row.children = data;
+        } else {
+          this.$message.error(meta.msg);
+        }
+      });
+    },
     deleteRole(id) {
       this.$confirm("此操作将永久删除该角色, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -249,52 +272,54 @@ export default {
           });
         });
     },
-    cancelpermission() {
-      this.permissionrolesDialog = false;
-    },
     permissionRole(roles) {
-      function getLevel3Ids(rightsList) {
-        let arr = [];
-        const fn = function(list) {
-          list.forEach(item => {
-            if (!item.children) {
-              arr.push(item.id);
-            } else {
-              fn(item.children);
-            }
-          });
-        };
-        fn(rightsList);
-        return arr;
-      }
-      this.currentRole = roles;
-      //获取所有权限列表
+      this.setRoleId = roles.id;
+      this.checkedKeys = [];
+      // 获取所有权限列表
       this.$http({
         url: `rights/tree`,
         method: "get"
       }).then(res => {
-        let { meta, data } = res.data;
-        this.permissionrolesData = data;
+        let { data, meta } = res.data;
+        if (meta.status === 200) {
+          this.permissionrolesData = data;
+          this.permissionrolesDialog = true;
+          roles.children.forEach(item => {
+            item.children.forEach(item1 => {
+              item1.children.forEach(item2 => {
+                this.checkedKeys.push(item2.id);
+              });
+            });
+          });
+        } else {
+          this.$message.error(meta.msg);
+        }
       });
-      this.permissionrolesDialog = true;
-      //获取当前角色获取的权限ID
-      this.checkedKeys = getLevel3Ids(roles.children);
-      console.log(this.checkedKeys);
     },
     editpermission() {
-      const Nodes = this.$refs.tree.getCheckedNodes();
+      const idsAll = this.$refs.tree.getCheckedKeys();
+      const idsHalf = this.$refs.tree.getHalfCheckedKeys();
       this.permissionrolesDialog = false;
-      this.$http({
-        url: `rights/tree`,
-        method: "get"
-      }).then(res => {
-        let { meta, data } = res.data;
-        this.permissionrolesData = data;
-      });
+      let ids = [...idsAll, ...idsHalf];
+      let idsStr = ids.join(",");
+      console.log(idsStr);
+
+      // this.$http({
+      //   url: `rights/tree`,
+      //   method: "get"
+      // }).then(res => {
+      //   let { meta, data } = res.data;
+      //   if (meta.status === 200) {
+      //     this.permissionrolesData = data;
+      //   }
+      // });
     }
   },
   mounted() {
     this.getRolesData();
+  },
+  components: {
+    Mybread: Mybread
   }
 };
 </script>
