@@ -7,6 +7,7 @@ import PermList from '../components/Permission/PermList.vue'
 import Rights from '../components/rights/rights.vue'
 import Reports from '../components/reports/reports.vue'
 import Goods from '../components/goods/goods.vue'
+import { Message } from 'element-ui'
 
 Vue.use(Router)
 var router = new Router({
@@ -31,7 +32,7 @@ router.beforeEach(function (to, from, next) {
   if (to.path !== "/login") {
     let token = window.localStorage.getItem('token')
     if (!token) {
-
+      Message.warning('请先登录')
       router.push('/login')
     } else {
       next()

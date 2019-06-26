@@ -302,17 +302,21 @@ export default {
       this.permissionrolesDialog = false;
       let ids = [...idsAll, ...idsHalf];
       let idsStr = ids.join(",");
-      console.log(idsStr);
-
-      // this.$http({
-      //   url: `rights/tree`,
-      //   method: "get"
-      // }).then(res => {
-      //   let { meta, data } = res.data;
-      //   if (meta.status === 200) {
-      //     this.permissionrolesData = data;
-      //   }
-      // });
+      this.$http({
+        url: `roles/${this.setRoleId}/rights`,
+        method: "post",
+        data: {
+          rids: idsStr
+        }
+      }).then(res => {
+        let { meta, data } = res.data;
+        if (meta.status === 200) {
+          this.$message.success(meta.msg);
+          this.getRolesData();
+        } else {
+          this.$message.error(meta.msg);
+        }
+      });
     }
   },
   mounted() {
