@@ -28,23 +28,23 @@
 </template>
 
 <script>
-import Mybread from "../mylayout/mybread";
+import Mybread from '../mylayout/mybread'
 export default {
-  data() {
+  data () {
     return {
       goodsList: {}
-    };
+    }
   },
   methods: {
-    getGoodsList() {}
+    getGoodsList () {}
   },
-  mounted() {
-    this.getGoodsList();
+  mounted () {
+    this.getGoodsList()
   },
   components: {
     Mybread: Mybread
   }
-};
+}
 </script>
 <style scope>
 .myrow {

@@ -123,20 +123,20 @@
   </div>
 </template>
 <script>
-import Mybread from "../mylayout/mybread";
+import Mybread from '../mylayout/mybread'
 export default {
-  data() {
+  data () {
     return {
       rolesData: [],
-      addroles: { roleName: "", roleDesc: "" },
-      editroles: { roleName: "", roleDesc: "" },
-      formLabelWidth: "80px",
+      addroles: { roleName: '', roleDesc: '' },
+      editroles: { roleName: '', roleDesc: '' },
+      formLabelWidth: '80px',
       addrolesDialog: false,
       editrolesDialog: false,
       permissionrolesDialog: false,
       defaultProps: {
-        label: "authName",
-        children: "children"
+        label: 'authName',
+        children: 'children'
       },
       // 所有的权限数组
       permissionrolesData: [],
@@ -146,186 +146,186 @@ export default {
       setRoleId: 0,
       rules: {
         roleName: [
-          { required: true, message: "请输入角色名称", trigger: "blur" }
+          { required: true, message: '请输入角色名称', trigger: 'blur' }
         ],
         roleDesc: [
-          { required: true, message: "请输入角色描述", trigger: "blur" }
+          { required: true, message: '请输入角色描述', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
   methods: {
-    getRolesData() {
+    getRolesData () {
       this.$http({
         url: `roles`,
-        method: "get"
+        method: 'get'
       }).then(res => {
-        let { data, meta } = res.data;
-        console.log(res);
+        let { data, meta } = res.data
+        console.log(res)
         if (meta.status === 200) {
-          this.rolesData = data;
+          this.rolesData = data
         }
-      });
+      })
     },
-    addRolesDialog() {
-      this.addrolesDialog = true;
+    addRolesDialog () {
+      this.addrolesDialog = true
     },
-    canceladdroles() {
-      this.addrolesDialog = false;
+    canceladdroles () {
+      this.addrolesDialog = false
     },
-    addrole() {
+    addrole () {
       this.$http({
         url: `roles`,
-        method: "post",
+        method: 'post',
         data: this.addroles
       }).then(res => {
-        console.log(res);
-        let { data, meta } = res.data;
+        console.log(res)
+        let { data, meta } = res.data
         if (meta.status === 201) {
-          this.addroles = data;
+          this.addroles = data
           this.$message({
-            type: "success",
+            type: 'success',
             message: meta.msg
-          });
-          this.addrolesDialog = false;
-          this.getRolesData();
-          this.addroles.roleName = "";
-          this.addroles.roleDesc = "";
+          })
+          this.addrolesDialog = false
+          this.getRolesData()
+          this.addroles.roleName = ''
+          this.addroles.roleDesc = ''
         } else {
-          this.$message.error(meta.msg);
+          this.$message.error(meta.msg)
         }
-      });
+      })
     },
-    editRolesDialog(id) {
+    editRolesDialog (id) {
       this.$http({
         url: `roles/${id}`,
-        method: "get"
+        method: 'get'
       }).then(res => {
-        let { data } = res.data;
-        this.editroles = data;
-      });
-      this.editrolesDialog = true;
+        let { data } = res.data
+        this.editroles = data
+      })
+      this.editrolesDialog = true
     },
-    canceleditroles() {
-      this.editrolesDialog = false;
+    canceleditroles () {
+      this.editrolesDialog = false
     },
-    editrole() {
-      let id = this.editroles.roleId;
+    editrole () {
+      let id = this.editroles.roleId
       this.$http({
         url: `roles/${id}`,
-        method: "put",
+        method: 'put',
         data: this.editroles
       }).then(res => {
-        let { meta } = res.data;
+        let { meta } = res.data
         if (meta.status === 200) {
-          this.getRolesData();
-          this.editrolesDialog = false;
+          this.getRolesData()
+          this.editrolesDialog = false
           this.$message({
-            type: "success",
-            message: "修改成功"
-          });
+            type: 'success',
+            message: '修改成功'
+          })
         }
-      });
+      })
     },
-    deleteright(rolesid, rightsid, scope) {
-      console.log(rolesid, rightsid, scope);
+    deleteright (rolesid, rightsid, scope) {
+      console.log(rolesid, rightsid, scope)
       this.$http({
         url: `roles/${rolesid}/rights/${rightsid}`,
-        method: "DELETE"
+        method: 'DELETE'
       }).then(res => {
-        let { data, meta } = res.data;
+        let { data, meta } = res.data
         if (meta.status === 200) {
           this.$message({
             message: meta.msg,
-            type: "success"
-          });
-          scope.row.children = data;
+            type: 'success'
+          })
+          scope.row.children = data
         } else {
-          this.$message.error(meta.msg);
+          this.$message.error(meta.msg)
         }
-      });
+      })
     },
-    deleteRole(id) {
-      this.$confirm("此操作将永久删除该角色, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+    deleteRole (id) {
+      this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
           this.$http({
             url: `roles/${id}`,
-            method: "delete"
+            method: 'delete'
           }).then(res => {
             if (res.data.meta.status === 200) {
-              this.getRolesData();
+              this.getRolesData()
               this.$message({
-                type: "success",
+                type: 'success',
                 message: res.data.meta.msg
-              });
+              })
             }
-          });
+          })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
-    permissionRole(roles) {
-      this.setRoleId = roles.id;
-      this.checkedKeys = [];
+    permissionRole (roles) {
+      this.setRoleId = roles.id
+      this.checkedKeys = []
       // 获取所有权限列表
       this.$http({
         url: `rights/tree`,
-        method: "get"
+        method: 'get'
       }).then(res => {
-        let { data, meta } = res.data;
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.permissionrolesData = data;
-          this.permissionrolesDialog = true;
+          this.permissionrolesData = data
+          this.permissionrolesDialog = true
           roles.children.forEach(item => {
             item.children.forEach(item1 => {
               item1.children.forEach(item2 => {
-                this.checkedKeys.push(item2.id);
-              });
-            });
-          });
+                this.checkedKeys.push(item2.id)
+              })
+            })
+          })
         } else {
-          this.$message.error(meta.msg);
+          this.$message.error(meta.msg)
         }
-      });
+      })
     },
-    editpermission() {
-      const idsAll = this.$refs.tree.getCheckedKeys();
-      const idsHalf = this.$refs.tree.getHalfCheckedKeys();
-      this.permissionrolesDialog = false;
-      let ids = [...idsAll, ...idsHalf];
-      let idsStr = ids.join(",");
+    editpermission () {
+      const idsAll = this.$refs.tree.getCheckedKeys()
+      const idsHalf = this.$refs.tree.getHalfCheckedKeys()
+      this.permissionrolesDialog = false
+      let ids = [...idsAll, ...idsHalf]
+      let idsStr = ids.join(',')
       this.$http({
         url: `roles/${this.setRoleId}/rights`,
-        method: "post",
+        method: 'post',
         data: {
           rids: idsStr
         }
       }).then(res => {
-        let { meta, data } = res.data;
+        let { meta } = res.data
         if (meta.status === 200) {
-          this.$message.success(meta.msg);
-          this.getRolesData();
+          this.$message.success(meta.msg)
+          this.getRolesData()
         } else {
-          this.$message.error(meta.msg);
+          this.$message.error(meta.msg)
         }
-      });
+      })
     }
   },
-  mounted() {
-    this.getRolesData();
+  mounted () {
+    this.getRolesData()
   },
   components: {
     Mybread: Mybread
   }
-};
+}
 </script>
 <style>
 .myrow {

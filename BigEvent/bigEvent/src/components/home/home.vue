@@ -16,14 +16,14 @@
   </el-container>
 </template>
 <script>
-import TopHead from "../mylayout/topHead";
-import SideBar from "../mylayout/sideBar";
+import TopHead from '../mylayout/topHead'
+import SideBar from '../mylayout/sideBar'
 export default {
   components: {
     TopHead: TopHead,
     SideBar: SideBar
   }
-};
+}
 </script>
 <style>
 .el-container {

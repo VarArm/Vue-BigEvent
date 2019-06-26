@@ -9,8 +9,8 @@
 <script>
 export default {
   // name: "mybread",
-  props: ["one", "two"]
-};
+  props: ['one', 'two']
+}
 </script>
 
 <style>

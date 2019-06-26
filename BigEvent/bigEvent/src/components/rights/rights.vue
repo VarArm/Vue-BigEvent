@@ -12,35 +12,35 @@
   </el-card>
 </template>
 <script>
-import Mybread from "../mylayout/mybread";
+import Mybread from '../mylayout/mybread'
 export default {
-  data() {
+  data () {
     return {
       rightsData: []
-    };
-  },
-  methods: {
-    getRightsData() {
-      this.$http({
-        url: "rights/list",
-        method: "get"
-      }).then(res => {
-        console.log(res);
-
-        let { data, meta } = res.data;
-        if (meta.status === 200) {
-          this.rightsData = data;
-        }
-      });
     }
   },
-  mounted() {
-    this.getRightsData();
+  methods: {
+    getRightsData () {
+      this.$http({
+        url: 'rights/list',
+        method: 'get'
+      }).then(res => {
+        console.log(res)
+
+        let { data, meta } = res.data
+        if (meta.status === 200) {
+          this.rightsData = data
+        }
+      })
+    }
+  },
+  mounted () {
+    this.getRightsData()
   },
   components: {
     Mybread: Mybread
   }
-};
+}
 </script>
 
 <style>

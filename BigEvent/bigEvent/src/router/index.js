@@ -7,6 +7,7 @@ import PermList from '../components/Permission/PermList.vue'
 import Rights from '../components/rights/rights.vue'
 import Reports from '../components/reports/reports.vue'
 import Goods from '../components/goods/goods.vue'
+import Categories from '../components/categories/categories.vue'
 import { Message } from 'element-ui'
 
 Vue.use(Router)
@@ -23,13 +24,14 @@ var router = new Router({
         { path: '/rights', component: Rights },
         { path: '/reports', component: Reports },
         { path: '/goods', component: Goods },
+        { path: '/categories', component: Categories }
       ]
     }
   ]
 })
 router.beforeEach(function (to, from, next) {
-  console.log(to);
-  if (to.path !== "/login") {
+  console.log(to)
+  if (to.path !== '/login') {
     let token = window.localStorage.getItem('token')
     if (!token) {
       Message.warning('请先登录')

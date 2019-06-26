@@ -126,9 +126,9 @@
   </div>
 </template>
 <script>
-import Mybread from "../mylayout/mybread";
+import Mybread from '../mylayout/mybread'
 export default {
-  data() {
+  data () {
     return {
       //
 
@@ -139,238 +139,238 @@ export default {
       // 页容量
       pagesize: 5,
       // 获取页面列表时的参数.可以为空
-      query: "",
+      query: '',
       // 总页数
       total: 0,
       // 页容量数组
       pagesizes: [5, 10, 15],
       // 模态框左边宽度
-      formLabelWidth: "80px",
-      formLabelWidth1: "100px",
+      formLabelWidth: '80px',
+      formLabelWidth1: '100px',
       // 添加,修改用户,分配角色对话框是否显示
       dialogFormVisible: false,
       editdialog: false,
       rolesdialog: false,
       // 添加用户数据
-      addList: { username: "", email: "", mobile: "", password: "" },
-      editList: { username: "", email: "", mobile: "" },
+      addList: { username: '', email: '', mobile: '', password: '' },
+      editList: { username: '', email: '', mobile: '' },
       // 分配角色列表
-      rolesList: { username: "", roleName: "", rid: "" },
+      rolesList: { username: '', roleName: '', rid: '' },
       // 角色数组
       options: [],
       rules: {
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 3, max: 8, message: "长度在 3 到 8 个字符", trigger: "blur" }
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 8, message: '长度在 3 到 8 个字符', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, max: 11, message: "长度在 6 到 11 个字符", trigger: "blur" }
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 11, message: '长度在 6 到 11 个字符', trigger: 'blur' }
         ],
         email: [
-          { type: "email", message: "邮箱地址格式不正确", trigger: "blur" }
+          { type: 'email', message: '邮箱地址格式不正确', trigger: 'blur' }
         ],
-        mobile: [{ type: "", message: "请输入用户名", trigger: "blur" }]
+        mobile: [{ type: '', message: '请输入用户名', trigger: 'blur' }]
       }
-    };
+    }
   },
   methods: {
-    getDataList() {
+    getDataList () {
       this.$http({
         url: `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${
           this.pagesize
         }`,
-        method: "get"
+        method: 'get'
       }).then(res => {
-        console.log(res);
-        let { data, meta } = res.data;
+        console.log(res)
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.userList = data.users;
-          this.total = data.total;
+          this.userList = data.users
+          this.total = data.total
         }
-      });
+      })
     },
-    searchuser() {
-      this.getDataList();
+    searchuser () {
+      this.getDataList()
     },
     // 改变页容量
-    handleSizeChange(val) {
-      this.pagesize = val;
-      this.getDataList();
+    handleSizeChange (val) {
+      this.pagesize = val
+      this.getDataList()
     },
     // 改变页码
-    handleCurrentChange(val) {
-      this.pagenum = val;
-      this.getDataList();
+    handleCurrentChange (val) {
+      this.pagenum = val
+      this.getDataList()
     },
 
-    addDialog() {
-      this.dialogFormVisible = true;
+    addDialog () {
+      this.dialogFormVisible = true
     },
-    cancelDialog() {
-      this.dialogFormVisible = false;
+    cancelDialog () {
+      this.dialogFormVisible = false
     },
-    addUser() {
+    addUser () {
       this.$refs.dialogForm.validate(valid => {
         if (valid) {
           this.$http({
-            url: "users",
-            method: "post",
+            url: 'users',
+            method: 'post',
             data: this.addList
           }).then(res => {
             if (res.data.meta.status === 201) {
               this.$message({
-                type: "success",
+                type: 'success',
                 message: res.data.meta.msg
-              });
-              this.dialogFormVisible = false;
-              this.getDataList();
+              })
+              this.dialogFormVisible = false
+              this.getDataList()
               // 清空新增面板
-              this.addList.username = "";
-              this.addList.password = "";
-              this.addList.email = "";
-              this.addList.mobile = "";
+              this.addList.username = ''
+              this.addList.password = ''
+              this.addList.email = ''
+              this.addList.mobile = ''
             } else {
-              this.$message.error(res.data.meta.msg);
+              this.$message.error(res.data.meta.msg)
             }
-          });
+          })
         }
-      });
+      })
     },
-    editDialog(id) {
-      this.editdialog = true;
+    editDialog (id) {
+      this.editdialog = true
       this.$http({
         url: `users/${id}`,
-        method: "get"
+        method: 'get'
       }).then(res => {
-        let { data, meta } = res.data;
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.editList = data;
+          this.editList = data
         }
-      });
+      })
     },
-    candeleditUser() {
-      this.editdialog = false;
+    candeleditUser () {
+      this.editdialog = false
     },
-    editUser() {
-      let id = this.editList.id;
+    editUser () {
+      let id = this.editList.id
       this.$http({
         url: `users/${id}`,
-        method: "put",
+        method: 'put',
         data: this.editList
       }).then(res => {
-        let { data, meta } = res.data;
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.editList = data;
-          console.log(this.editList);
+          this.editList = data
+          console.log(this.editList)
 
           this.$message({
-            type: "success",
+            type: 'success',
             message: meta.msg
-          });
-          this.editdialog = false;
-          this.getDataList();
+          })
+          this.editdialog = false
+          this.getDataList()
         } else {
-          this.$message.error(meta.msg);
+          this.$message.error(meta.msg)
         }
-      });
+      })
     },
-    deleteUser(id) {
-      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+    deleteUser (id) {
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
           this.$http({
             url: `users/${id}`,
-            method: "delete"
+            method: 'delete'
           }).then(res => {
             if (res.data.meta.status === 200) {
-              this.getDataList();
+              this.getDataList()
               this.$message({
-                type: "success",
+                type: 'success',
                 message: res.data.meta.msg
-              });
+              })
             }
-          });
+          })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
-    AssignRoles(id) {
-      this.rolesdialog = true;
+    AssignRoles (id) {
+      this.rolesdialog = true
       this.$http({
         url: `users/${id}`,
-        method: "get"
+        method: 'get'
       }).then(res => {
-        console.log(res);
-        let { data, meta } = res.data;
+        console.log(res)
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.rolesList = data;
+          this.rolesList = data
         }
-      });
+      })
       this.$http({
         url: `roles`,
-        method: "get"
+        method: 'get'
       }).then(res => {
         if (res.data.meta.status === 200) {
-          this.options = res.data.data;
+          this.options = res.data.data
         }
-      });
+      })
     },
-    candelRoles() {
-      this.rolesdialog = false;
+    candelRoles () {
+      this.rolesdialog = false
     },
     // 分配角色
-    RolesAssign() {
-      let rid = this.rolesList.rid;
-      let id = this.rolesList.id;
-      console.log(rid, id);
+    RolesAssign () {
+      let rid = this.rolesList.rid
+      let id = this.rolesList.id
+      console.log(rid, id)
       this.$http({
         url: `users/${id}/role`,
-        method: "put",
+        method: 'put',
         data: { rid }
       }).then(res => {
-        let { meta } = res.data;
+        let { meta } = res.data
         if (meta.status === 200) {
           this.$message({
-            type: "success",
+            type: 'success',
             message: meta.msg
-          });
-          this.rolesdialog = false;
+          })
+          this.rolesdialog = false
         } else {
-          this.$message.error(meta.msg);
+          this.$message.error(meta.msg)
         }
-      });
+      })
     },
-    changeState(state) {
+    changeState (state) {
       this.$http({
         url: `users/${state.id}/state/${state.mg_state}`,
-        method: "put"
+        method: 'put'
       }).then(res => {
         if (res.data.meta.status === 200) {
           this.$message({
-            type: "success",
+            type: 'success',
             message: res.data.meta.msg
-          });
+          })
         } else {
-          this.$message.error(res.data.meta.msg);
+          this.$message.error(res.data.meta.msg)
         }
-      });
+      })
     }
   },
-  mounted() {
-    this.getDataList();
+  mounted () {
+    this.getDataList()
   },
   components: {
     Mybread: Mybread
   }
-};
+}
 </script>
 <style scoped>
 .myrow {
