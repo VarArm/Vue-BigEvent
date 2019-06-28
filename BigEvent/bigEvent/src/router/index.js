@@ -9,6 +9,7 @@ import Reports from '../components/reports/reports.vue'
 import Goods from '../components/goods/goods.vue'
 import Categories from '../components/categories/categories.vue'
 import Addgood from '../components/goods/addgood.vue'
+import VueQuillEdito from '../components/vueQuillEdito/vueQuillEdito.vue'
 import { Message } from 'element-ui'
 
 Vue.use(Router)
@@ -27,6 +28,7 @@ var router = new Router({
         { path: '/goods', component: Goods },
         { path: '/categories', component: Categories },
         { path: '/addGood', component: Addgood },
+        { path: '/orders', component: VueQuillEdito }
       ]
     }
   ]

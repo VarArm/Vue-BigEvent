@@ -41,62 +41,62 @@
 </template>
 
 <script>
-import Mybread from "../mylayout/mybread";
-import moment from "moment";
+import Mybread from '../mylayout/mybread'
+import moment from 'moment'
 export default {
-  data() {
+  data () {
     return {
       goodsList: [],
-      query: "",
+      query: '',
       pagesize: 10,
       pagenum: 1,
       pagesizes: [10, 15, 20],
       total: 0
-    };
+    }
   },
   methods: {
-    getGoodsList() {
+    getGoodsList () {
       this.$http({
         url: `goods?query=${this.query}&pagenum=${this.pagenum}&pagesize=${
           this.pagesize
         }`,
-        method: "get"
+        method: 'get'
       }).then(res => {
-        console.log(res);
-        let { data, meta } = res.data;
+        console.log(res)
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.goodsList = data.goods;
-          this.total = data.total;
+          this.goodsList = data.goods
+          this.total = data.total
         } else {
-          this.$message.error(meta.msg);
+          this.$message.error(meta.msg)
         }
-      });
+      })
     },
-    handleSizeChange(pagesize) {
-      this.pagesize = pagesize;
-      this.getGoodsList();
+    handleSizeChange (pagesize) {
+      this.pagesize = pagesize
+      this.getGoodsList()
     },
-    searchgood() {
-      this.getGoodsList();
+    searchgood () {
+      this.getGoodsList()
     },
-    handleCurrentChange(pagenum) {
-      this.pagenum = pagenum;
-      this.getGoodsList();
+    handleCurrentChange (pagenum) {
+      this.pagenum = pagenum
+      this.getGoodsList()
     },
-    addGoodDialog() {}
+    addGoodDialog () {}
   },
-  mounted() {
-    this.getGoodsList();
+  mounted () {
+    this.getGoodsList()
   },
   filters: {
-    datefilter: function(value) {
-      return moment(value).format("YYYY-MM-DD h:mm:ss");
+    datefilter: function (value) {
+      return moment(value).format('YYYY-MM-DD h:mm:ss')
     }
   },
   components: {
     Mybread: Mybread
   }
-};
+}
 </script>
 <style scope>
 .myrow {

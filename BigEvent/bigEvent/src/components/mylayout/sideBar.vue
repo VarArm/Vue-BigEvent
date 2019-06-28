@@ -15,29 +15,30 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       leftList: []
-    };
+    }
   },
   methods: {
-    getLeftList() {
+    getLeftList () {
       this.$http({
         url: `menus`
       }).then(res => {
-        let { meta, data } = res.data;
+        let { meta, data } = res.data
         if (meta.status === 200) {
-          this.leftList = data;
+          this.leftList = data
+          console.log(data)
         } else {
-          this.$message.error(meta.msg);
+          this.$message.error(meta.msg)
         }
-      });
+      })
     }
   },
-  mounted() {
-    this.getLeftList();
+  mounted () {
+    this.getLeftList()
   }
-};
+}
 </script>
 
 <style>

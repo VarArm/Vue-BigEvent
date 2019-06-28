@@ -64,27 +64,52 @@
           {{picList}}
         </el-upload>
       </el-tab-pane>
-      <el-tab-pane label="商品内容" name="fifth">商品内容</el-tab-pane>
+      <el-tab-pane label="商品内容" name="fifth">
+        <div>
+          <el-button size="small" type="success">添加商品</el-button>
+          <quillEditor
+            v-model="content"
+            ref="myQuillEditor"
+            :options="editorOption"
+            @blur="onEditorBlur($event)"
+            @focus="onEditorFocus($event)"
+            @change="onEditorChange($event)"
+          ></quillEditor>
+        </div>
+      </el-tab-pane>
     </el-tabs>
+    <el-dialog title="图片预览" :visible.sync="picDialog">
+      <img ref="Myimg" src="#" alt="图片">
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="picDialog = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-card>
 </template>
 <script>
 import Mybread from "../mylayout/mybread";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import { quillEditor } from "vue-quill-editor"; // 调用编辑器
 export default {
   data() {
     return {
+      content: `<p>111</p>`,
+      editorOption: {},
       active: 0,
       tabPosition: "left",
       checked: true,
-      //级联选择器的数据
+      picDialog: false,
+      // 级联选择器的数据
       goodOpt: [],
-      //级联选择器选择的数据集合
+      // 级联选择器选择的数据集合
       goodVal: [],
-      //商品参数列表
+      // 商品参数列表
       goodsMany: [],
-      //商品属性列表
+      // 商品属性列表
       goodsOnly: [],
-      //图片路径集合
+      // 图片路径集合
       picList: [],
       activeName: "first",
       labelPosition: "top",
@@ -126,7 +151,7 @@ export default {
       }
     },
 
-    //点击左边步骤条
+    // 点击左边步骤条
     tabclick(val) {
       this.active = +val.index;
       if (val.index === "1") {
@@ -136,24 +161,45 @@ export default {
         this.getAttributes("only");
       }
     },
-    //预览图片
+    // 预览图片
     previewPic(file) {
+      this.picDialog = true;
       var img = file.response.data.url;
+      this.$nextTick(() => {
+        this.$refs.Myimg.src = img;
+      });
     },
-    //上传图片成功
+    // 上传图片成功
     successPic(response, file, fileList) {
-      console.log(response);
       this.picList.push(response.data.tmp_path);
     },
     removePic(response, file, fileList) {
-      console.log(file);
+      console.log(response);
+      console.log(response.response.data.tmp_path);
+      this.picList.forEach((item, index) => {
+        if (response.response.data.tmp_path === item) {
+          this.picList.splice(index, 1);
+        }
+      });
+    },
+    onEditorReady(editor) {
+      // 准备编辑器
+    },
+    onEditorBlur() {}, // 失去焦点事件
+    onEditorFocus() {}, // 获得焦点事件
+    onEditorChange() {} // 内容改变事件
+  },
+  computed: {
+    editor() {
+      return this.$refs.myQuillEditor.quill;
     }
   },
   mounted() {
     this.getgoodOpt();
   },
   components: {
-    Mybread: Mybread
+    Mybread: Mybread,
+    quillEditor
   }
 };
 </script>
