@@ -3,19 +3,20 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
 import ElTreeGrid from 'element-tree-grid'
-// import echarts from "echarts"
+import echarts from "echarts"
 import 'element-ui/lib/theme-chalk/index.css'
 import '../src/assets/css/index.css'
 // 引入myaxios
 import myaxios from '../src/assets/js/myaxios'
 import App from './App'
 import router from './router'
-
+import moment from 'moment'
 Vue.use(ElementUI)
 // 使用axios
 Vue.use(myaxios)
 Vue.component(ElTreeGrid.name, ElTreeGrid)
-// Vue.prototype.$echarts = echarts
+Vue.prototype.$moment = moment;//赋值使用
+Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({

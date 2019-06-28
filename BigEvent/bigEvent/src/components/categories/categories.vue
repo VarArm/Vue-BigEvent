@@ -176,7 +176,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .myrow {
   margin-top: 20px;
