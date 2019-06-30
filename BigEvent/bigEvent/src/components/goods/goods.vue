@@ -8,7 +8,7 @@
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button type="success" plain @click.prevent="$router.push('/addGood')">添加用户</el-button>
+        <el-button type="success" plain @click.prevent="$router.push('/addGood')">添加商品</el-button>
       </el-col>
     </el-row>
     <el-table border :data="goodsList">

@@ -1,45 +1,27 @@
 <template>
-  <div class="edit_container">
-    <quill-editor
-      v-model="content"
-      ref="myQuillEditor"
-      :options="editorOption"
-      @blur="onEditorBlur($event)"
-      @focus="onEditorFocus($event)"
-      @change="onEditorChange($event)"
-    ></quill-editor>
-  </div>
+  <div id="container"></div>
 </template>
+
 <script>
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-import { quillEditor } from 'vue-quill-editor' // 调用编辑器
+import BMap from "BMap";
 export default {
-  components: {
-    quillEditor
-  },
-  data () {
-    return {
-      content: `<p></p><p><br></p><ol><li><strong><em>Or drag/paste an image here.</em></strong></li><li><strong><em>rerew</em></strong></li><li><strong><em>rtrete</em></strong></li><li><strong><em>tytrytr</em></strong></li><li><strong><em>uytu</em></strong></li></ol>`,
-      editorOption: {}
-    }
-  },
-  methods: {
-    onEditorReady (editor) {
-      // 准备编辑器
-    },
-    onEditorBlur () {}, // 失去焦点事件
-    onEditorFocus () {}, // 获得焦点事件
-    onEditorChange () {} // 内容改变事件
-  },
-  computed: {
-    editor () {
-      return this.$refs.myQuillEditor.quill
-    }
+  mounted() {
+    // 创建实例
+    var map = new BMap.Map("container");
+    // 设置中心点
+    var point = new BMap.Point(114.06667, 22.61667);
+    // 展示级别
+    map.centerAndZoom(point, 12);
+    map.addControl(new BMap.NavigationControl());
+    map.addControl(new BMap.ScaleControl());
+    map.addControl(new BMap.OverviewMapControl());
+    map.addControl(new BMap.MapTypeControl());
   }
-}
+};
 </script>
 
 <style>
+#container {
+  height: 100%;
+}
 </style>

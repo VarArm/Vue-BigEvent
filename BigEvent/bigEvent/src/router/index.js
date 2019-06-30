@@ -1,16 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from '@/components/login/login.vue'
-import Home from '../components/home/home.vue'
-import UserList from '../components/userList/userList.vue'
-import PermList from '../components/Permission/PermList.vue'
-import Rights from '../components/rights/rights.vue'
-import Reports from '../components/reports/reports.vue'
-import Goods from '../components/goods/goods.vue'
-import Categories from '../components/categories/categories.vue'
-import Addgood from '../components/goods/addgood.vue'
-import VueQuillEdito from '../components/vueQuillEdito/vueQuillEdito.vue'
 import { Message } from 'element-ui'
+
+const Login = () => import('@/components/login/login.vue')
+const Home = () => import('../components/home/home.vue')
+const UserList = () => import('../components/userList/userList.vue')
+const PermList = () => import('../components/Permission/PermList.vue')
+const Rights = () => import('../components/rights/rights.vue')
+const Reports = () => import('../components/reports/reports.vue')
+const Goods = () => import('../components/goods/goods.vue')
+const Categories = () => import('../components/categories/categories.vue')
+const Addgood = () => import('../components/goods/addgood.vue')
+const VueQuillEdito = () => import('../components/vueQuillEdito/vueQuillEdito.vue')
 
 Vue.use(Router)
 var router = new Router({

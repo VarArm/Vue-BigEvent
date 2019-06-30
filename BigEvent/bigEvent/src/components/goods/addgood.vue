@@ -13,16 +13,16 @@
       <el-tab-pane label="基本信息" name="first">
         <el-form ref="form" label-width="80px" :label-position="labelPosition">
           <el-form-item label="商品名称">
-            <el-input></el-input>
+            <el-input v-model="addObj.goods_name"></el-input>
           </el-form-item>
           <el-form-item label="商品价格">
-            <el-input></el-input>
+            <el-input v-model="addObj.goods_price"></el-input>
           </el-form-item>
           <el-form-item label="商品重量">
-            <el-input></el-input>
+            <el-input v-model="addObj.goods_weight"></el-input>
           </el-form-item>
           <el-form-item label="商品数量">
-            <el-input></el-input>
+            <el-input v-model="addObj.goods_number"></el-input>
           </el-form-item>
           <el-form-item label="商品分类">
             {{goodVal}}
@@ -66,7 +66,7 @@
       </el-tab-pane>
       <el-tab-pane label="商品内容" name="fifth">
         <div>
-          <el-button size="small" type="success">添加商品</el-button>
+          <el-button size="small" type="success" @click.prevent="addGoodsFn">添加商品</el-button>
           <quillEditor
             v-model="content"
             ref="myQuillEditor"
@@ -87,18 +87,18 @@
   </el-card>
 </template>
 <script>
-import Mybread from "../mylayout/mybread";
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
-import { quillEditor } from "vue-quill-editor"; // 调用编辑器
+import Mybread from '../mylayout/mybread'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor' // 调用编辑器
 export default {
-  data() {
+  data () {
     return {
       content: `<p>111</p>`,
       editorOption: {},
       active: 0,
-      tabPosition: "left",
+      tabPosition: 'left',
       checked: true,
       picDialog: false,
       // 级联选择器的数据
@@ -109,102 +109,129 @@ export default {
       goodsMany: [],
       // 商品属性列表
       goodsOnly: [],
+      // 添加商品参数
+      addObj: {
+        goods_name: '',
+        goods_cat: '',
+        goods_price: '',
+        goods_number: '',
+        goods_weight: ''
+      },
       // 图片路径集合
       picList: [],
-      activeName: "first",
-      labelPosition: "top",
-      propObj: { expandTrigger: "hover", label: "cat_name", value: "cat_id" },
-      headersObj: { Authorization: window.localStorage.getItem("token") }
-    };
+      activeName: 'first',
+      labelPosition: 'top',
+      propObj: { expandTrigger: 'hover', label: 'cat_name', value: 'cat_id' },
+      headersObj: { Authorization: window.localStorage.getItem('token') }
+    }
   },
   methods: {
-    getgoodOpt() {
+    getgoodOpt () {
       this.$http({
         url: `categories`,
-        method: "get"
+        method: 'get'
       }).then(res => {
-        let { data, meta } = res.data;
+        let { data, meta } = res.data
         if (meta.status === 200) {
-          this.goodOpt = data;
+          this.goodOpt = data
         }
-      });
+      })
     },
-    getAttributes(sel) {
+    getAttributes (sel) {
       if (this.goodVal.length !== 0) {
         this.$http({
           url: `categories/${
             this.goodVal[this.goodVal.length - 1]
           }/attributes?sel=${sel}`
         }).then(res => {
-          let { meta, data } = res.data;
+          let { meta, data } = res.data
           if (meta.status === 200) {
-            if (sel === "many") {
-              this.goodsMany = data;
-            } else if (sel === "only") {
-              this.goodsOnly = data;
-              console.log(data);
+            if (sel === 'many') {
+              this.goodsMany = data
+            } else if (sel === 'only') {
+              this.goodsOnly = data
+              console.log(data)
             }
           }
-        });
+        })
       } else {
-        this.$message.error("请先选择商品分类");
+        this.$message.error('请先选择商品分类')
       }
     },
 
     // 点击左边步骤条
-    tabclick(val) {
-      this.active = +val.index;
-      if (val.index === "1") {
-        this.getAttributes("many");
+    tabclick (val) {
+      this.active = +val.index
+      if (val.index === '1') {
+        this.getAttributes('many')
       }
-      if (val.index === "2") {
-        this.getAttributes("only");
+      if (val.index === '2') {
+        this.getAttributes('only')
       }
     },
     // 预览图片
-    previewPic(file) {
-      this.picDialog = true;
-      var img = file.response.data.url;
+    previewPic (file) {
+      this.picDialog = true
+      var img = file.response.data.url
       this.$nextTick(() => {
-        this.$refs.Myimg.src = img;
-      });
+        this.$refs.Myimg.src = img
+      })
     },
     // 上传图片成功
-    successPic(response, file, fileList) {
-      this.picList.push(response.data.tmp_path);
+    successPic (response, file, fileList) {
+      this.picList.push(response.data.tmp_path)
     },
-    removePic(response, file, fileList) {
-      console.log(response);
-      console.log(response.response.data.tmp_path);
+    removePic (response, file, fileList) {
+      console.log(response)
+      console.log(response.response.data.tmp_path)
       this.picList.forEach((item, index) => {
         if (response.response.data.tmp_path === item) {
-          this.picList.splice(index, 1);
+          this.picList.splice(index, 1)
         }
-      });
+      })
     },
-    onEditorReady(editor) {
+    onEditorReady (editor) {
       // 准备编辑器
     },
-    onEditorBlur() {}, // 失去焦点事件
-    onEditorFocus() {}, // 获得焦点事件
-    onEditorChange() {} // 内容改变事件
-  },
-  computed: {
-    editor() {
-      return this.$refs.myQuillEditor.quill;
+    onEditorBlur () {}, // 失去焦点事件
+    onEditorFocus () {}, // 获得焦点事件
+    onEditorChange () {}, // 内容改变事件
+    // 添加商品
+    addGoodsFn () {
+      this.$http({
+        method: 'post',
+        url: 'goods',
+        data: {
+          ...this.addObj,
+          goods_introduce: this.content,
+          goods_cat: this.goodVal.join(',')
+        }
+      }).then(res => {
+        console.log(res)
+
+        if (res.data.meta.status === 201) {
+          this.$message.success(res.data.meta.msg)
+          this.$router.push('/goods')
+        }
+      })
     }
   },
-  mounted() {
-    this.getgoodOpt();
+  computed: {
+    editor () {
+      return this.$refs.myQuillEditor.quill
+    }
+  },
+  mounted () {
+    this.getgoodOpt()
   },
   components: {
     Mybread: Mybread,
     quillEditor
   }
-};
+}
 </script>
 
-<style scoped>
+<style >
 .el-alert--info.is-light {
   margin: 20px 0;
 }
@@ -215,5 +242,8 @@ export default {
   margin-top: 20px;
   margin-bottom: 20px;
   margin-right: 0;
+}
+.ql-editor {
+  height: 400px;
 }
 </style>
